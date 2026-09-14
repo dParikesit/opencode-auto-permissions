@@ -15,11 +15,11 @@ On released V2, approvals apply to the current evaluation only; the plugin never
 
 ## Install
 
-Install this fork's server-review branch globally with OpenCode's built-in plugin installer. If the upstream npm package is already configured, remove that entry first:
+Server-side V2 review is included in this fork's `main` branch. Install it globally with OpenCode's built-in plugin installer. If the upstream npm package is already configured, remove that entry first:
 
 ```bash
 opencode plugin remove opencode-auto-permissions
-opencode plugin add 'git+ssh://git@github.com/dParikesit/opencode-auto-permissions.git#feature/v2-server-permission-review'
+opencode plugin add 'git+ssh://git@github.com/dParikesit/opencode-auto-permissions.git#main'
 ```
 
 The upstream npm release `opencode-auto-permissions@0.2.13` does not include this server-side V2 adaptation. Use the Git target above to get it. The repository includes built artifacts, so installation does not require a local build.
@@ -55,19 +55,21 @@ Confirm the configured target with `opencode plugin list`, then exercise a harml
 
 ## Update
 
-Update the package plugin to the latest published version:
+Update the installed plugin to the latest commit on this fork's `main` branch:
 
 ```bash
-opencode plugin update 'git+ssh://git@github.com/dParikesit/opencode-auto-permissions.git#feature/v2-server-permission-review'
+opencode plugin update 'git+ssh://git@github.com/dParikesit/opencode-auto-permissions.git#main'
 ```
 
-If your configuration entry pins a version (for example `opencode-auto-permissions@0.2.10`), remove the pin or repoint it first; the updater treats a satisfied version pin as current. Older stable builds use `opencode plugin -g --force opencode-auto-permissions@latest` instead.
+If you installed the earlier feature-branch version, change its Git target in `~/.config/opencode/opencode.json` to the `#main` target above, preserving any plugin options, then run the update command. The updater follows the configured branch; it does not switch branches automatically.
+
+Exact npm versions and full Git commit hashes stay pinned. Repoint those entries to the `#main` target above to follow this fork's updates.
 
 Restart the server if the updated package has not reloaded. Older V2 beta installations that configure both server and TUI options should keep those options synchronized.
 
 ## Uninstall
 
-Remove the configured Git target with `opencode plugin remove 'git+ssh://git@github.com/dParikesit/opencode-auto-permissions.git#feature/v2-server-permission-review'`, or remove its entry from `plugins` in `~/.config/opencode/opencode.json`.
+Remove the configured Git target with `opencode plugin remove 'git+ssh://git@github.com/dParikesit/opencode-auto-permissions.git#main'`, or remove its entry from `plugins` in `~/.config/opencode/opencode.json`.
 
 Remove only this package's entries; leave other plugins and configuration unchanged.
 
@@ -139,7 +141,7 @@ No options are required. To select a dedicated reviewer, replace the Git target 
 
 ```json
 {
-  "package": "git+ssh://git@github.com/dParikesit/opencode-auto-permissions.git#feature/v2-server-permission-review",
+  "package": "git+ssh://git@github.com/dParikesit/opencode-auto-permissions.git#main",
   "options": { "model": "openai/gpt-4.1", "timeoutMs": 30000 }
 }
 ```
