@@ -4,10 +4,45 @@ The plugin detects the runtime protocol automatically. Users do not choose a
 V1 or V2 mode:
 
 - stable OpenCode permission events are handled by the server adapter;
-- V2 permission events are handled by the TUI adapter.
+- released V2 reviews are handled by the server evaluation hook;
+- older V2 beta permission events are handled by the TUI adapter.
 
 The commands below choose which OpenCode executable to launch for testing;
 they do not configure the plugin's runtime behavior.
+
+## Released V2 desktop/web check (no TUI)
+
+```bash
+bun install
+bun run verify
+AUTO_PERMISSIONS_V2_BINARY=/absolute/path/to/opencode bun run test:v2-server
+```
+
+The executable must be a released V2 host; this fork was verified with `2.0.1`.
+When the override is omitted, the script searches PATH outside this repository's
+pinned older-beta binary. The test builds and packs the plugin, extracts the
+published files into a fresh directory under `/tmp/opencode`, and loads that
+directory in a real headless server. `index.js` provides local directory
+discovery on OpenCode 2.0.1. It authenticates with that test server's generated
+password and waits for plugin activation before checking behavior.
+
+The reviewer endpoint is a local OpenAI-compatible mock. No provider credentials
+or user data are copied, no external model calls are made, and no TUI is started.
+Only permission strings are evaluated; dangerous example commands never execute.
+The checks exercise configured allow/deny, deterministic policy, model approval
+and denial, invalid JSON, timeout, empty pending queues, shadow-mode manual
+approval, location reload, and absence of reviewer sessions. These verify the
+host integration, not the judgment quality of a real model.
+
+Unit tests in `test/v2-server.test.ts` also verify root-human context isolation,
+exact tool input, requesting-session model/variant inheritance, explicit model
+options, cancellation with late completion, deduplication, cyclic ancestry, and
+one-time approval behavior. Native hook denial feedback is passed directly in
+`event.message`; it does not submit a synthetic/user continuation prompt.
+
+The isolated logs and test configuration remain in the printed test directory.
+Its `server.log` contains an ephemeral password for the test process, which is
+stopped in the script's cleanup.
 
 ## Prerequisites
 

@@ -29,6 +29,10 @@ describe("built package", () => {
     expect(typeof server.default.setup).toBe("function")
     expect(typeof server.default.server).toBe("function")
 
+    const directory = await import(resolve(dist, "../index.js") + `?test=${Date.now()}`)
+    expect(directory.default.id).toBe("opencode.auto-permissions.server")
+    expect(typeof directory.default.setup).toBe("function")
+
     const v1Server = await import(resolve(dist, "v1-server.js") + `?test=${Date.now()}`)
     expect(v1Server.default).toMatchObject({ id: "opencode.auto-permissions.server" })
     expect(typeof v1Server.default.server).toBe("function")

@@ -22,6 +22,7 @@
     "./tui": "./dist/tui.js"
   },
   "files": [
+    "index.js",
     "dist",
     "LICENSE",
     "README.md"
@@ -33,6 +34,7 @@
     "test:coverage": "bun test --coverage",
     "test:stable": "bun run scripts/test-runtime.ts stable",
     "test:v2": "bun run scripts/test-runtime.ts v2",
+    "test:v2-server": "bun run build && bun run scripts/test-v2-server.ts",
     "verify": "bun run check && bun run test && bun run build && bun run test:package",
     "test:package": "bun test test/package.test.ts"
   },
@@ -48,6 +50,7 @@
     "node": ">=22"
   },
   "devDependencies": {
+    "@opencode/plugin": "2.0.1",
     "@opencode-ai/plugin": "0.0.0-beta-19271",
     "@opencode-ai/sdk": "0.0.0-beta-19271",
     "@opentui/core": "0.4.5",

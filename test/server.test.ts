@@ -31,6 +31,18 @@ function pluginInput() {
 }
 
 describe("server plugin", () => {
+  test("keeps the historical beta reviewer owned by its TUI", async () => {
+    const agents: Record<string, any> = {}
+    const dispose = await server.setup({
+      app: { version: "0.0.0-beta-202608110357" },
+      options: {},
+      permission: { hook() { throw new Error("Beta server must not compete with its TUI") } },
+      agent: { async transform(fn: any) { fn({ update(id: string, update: (agent: any) => void) { update(agents[id] = {}) } }) } },
+    } as never)
+    expect(agents["auto-permissions-reviewer"]).toMatchObject({ hidden: true, permissions: [{ action: "*", resource: "*", effect: "deny" }] })
+    expect(dispose).toBeUndefined()
+  })
+
   test("prioritizes exact tool input and the latest human request", () => {
     expect(REVIEWER_SYSTEM_PROMPT).toContain("Judge the actual operation from toolInput")
     expect(REVIEWER_SYSTEM_PROMPT).toContain("Give the latest human request the greatest weight")
