@@ -194,6 +194,11 @@ function delay(milliseconds: number, signal: AbortSignal): Promise<void> {
   })
 }
 
+export function isReleasedV2(version: string | undefined): boolean {
+  const major = /^v?(\d+)\./.exec(version ?? "")?.[1]
+  return major !== undefined && Number(major) >= 2
+}
+
 export function protocolForVersion(version: string | undefined): "stable" | "v2" | undefined {
   if (!version) return undefined
   if (version.startsWith("0.0.0-beta") || version.startsWith("0.0.0-next")) return "v2"

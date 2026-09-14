@@ -1,12 +1,17 @@
-import { Plugin as V2Plugin } from "@opencode-ai/plugin"
+import * as V2Plugin from "@opencode/plugin/promise/plugin"
 import { REVIEWER_AGENT_ID, REVIEWER_SYSTEM_PROMPT } from "./agent.ts"
 import { parseConfig } from "./config.ts"
 import { installReviewer } from "./reviewer.ts"
-import { createStableRuntime, protocolForVersion } from "./stable.ts"
+import { createStableRuntime, isReleasedV2, protocolForVersion } from "./stable.ts"
+import { installServerReviewer } from "./v2-server.ts"
 
 const v2Plugin = V2Plugin.define({
   id: "opencode.auto-permissions.server",
   async setup(context) {
+    if (isReleasedV2(context.app?.version) && typeof context.permission?.hook === "function") {
+      return installServerReviewer(context)
+    }
+    // Earlier V2 betas rely on the TUI adapter and its hidden reviewer agent.
     const config = parseConfig(context.options)
     await context.agent.transform((draft) => {
       draft.update(REVIEWER_AGENT_ID, (agent) => {

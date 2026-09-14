@@ -86,8 +86,9 @@ pushes to `main` are not allowed.
 
 ```
 src/
-├── server.ts            # Stable server plugin entry point
-├── tui.ts               # V2 TUI plugin entry point
+├── server.ts            # Native V2 and legacy server entry point
+├── v2-server.ts         # V2 server evaluation hook and stateless reviewer
+├── tui.ts               # Older V2 beta TUI adapter (inactive on released V2)
 ├── reviewer.ts          # Permission review pipeline (ask/reply/timeout)
 ├── context.ts           # Event normalization and review context collection
 ├── policy.ts            # Deterministic safety rules
@@ -102,6 +103,7 @@ src/
 
 test/                    # Unit tests mirroring src/
 scripts/test-runtime.ts  # Isolated stable/V2 runtime launchers
+scripts/test-v2-server.ts # Packed-plugin headless V2 integration checks
 docs/                    # Build plan, compatibility notes, testing guide
 ```
 

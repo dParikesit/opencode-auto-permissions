@@ -33,6 +33,21 @@ async function settle() {
 }
 
 describe("TUI plugin runtime ownership", () => {
+  test("leaves released V2 review to the server, including shadow mode", async () => {
+    const app = context("2.0.1")
+    Object.assign(app.context, { app: { version: "2.0.1" }, options: { shadow: true } })
+    const dispose = await plugin.setup(app.context)
+    expect(app.subscriptions).toEqual([])
+    expect(dispose).toBeUndefined()
+  })
+
+  test("also disables the transitional TUI entry on a released V2 server", async () => {
+    const api = { client: { health: { get: async () => ({ version: "2.0.1" }) } } }
+    // No UI state or event bus is supplied: a server-owned review must not
+    // try to initialize the legacy terminal adapter at all.
+    await plugin.tui(api as never, {})
+  })
+
   test("owns V2 permission events", async () => {
     const app = context("0.0.0-beta-202608040144")
 

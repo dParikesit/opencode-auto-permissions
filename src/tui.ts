@@ -4,7 +4,7 @@ import { AUTO_PERMISSIONS_MESSAGE_PREFIX } from "./context.ts"
 import { parseConfig } from "./config.ts"
 import { describeError, writeDiagnostic } from "./diagnostics.ts"
 import { installReviewer } from "./reviewer.ts"
-import { protocolForVersion } from "./stable.ts"
+import { isReleasedV2, protocolForVersion } from "./stable.ts"
 import type { RuntimeContext } from "./types.ts"
 import { PLUGIN_VERSION } from "./version.ts"
 
@@ -13,6 +13,9 @@ export const id = "opencode.auto-permissions"
 const plugin = Plugin.define({
   id,
   setup(context) {
+    // Released V2 hosts perform review in the server's evaluation hook. The
+    // terminal must also stand aside in shadow mode, where prompts stay open.
+    if (isReleasedV2(context.app?.version)) return
     return installReviewer(fromContext(context), { protocols: ["v2"] })
   },
 })
@@ -203,7 +206,8 @@ async function isStableRuntime(client: unknown): Promise<boolean> {
   if (!health) return false
   try {
     const result = unwrap(await health.call(value.health ?? value.global))
-    return protocolForVersion((result as { version?: string })?.version) === "stable"
+    const version = (result as { version?: string })?.version
+    return isReleasedV2(version) || protocolForVersion(version) === "stable"
   } catch {
     return false
   }

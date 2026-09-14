@@ -1,5 +1,11 @@
 # OpenCode Stable And V2 Compatibility Spike
 
+These are historical upstream beta notes. This fork additionally supports
+released V2 through a server-owned permission evaluation hook, tested without
+a TUI on OpenCode `2.0.1`. See [Testing](TESTING.md#released-v2-desktopweb-check-no-tui)
+for the current packed-plugin integration test. The beta session/event
+measurements below do not describe the native V2 stateless reviewer.
+
 Verified on 4 August 2026 against:
 
 - OpenCode `0.0.0-beta-202608040144`
